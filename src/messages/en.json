@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "research": "Research",
+    "projects": "Projects",
+    "events": "Events",
+    "about": "About",
+    "search": "Search",
+    "login": "Login"
+  },
+  "home": {
+    "featured": "Featured",
+    "latest": "Latest",
+    "all": "All",
+    "news": "News",
+    "policy": "Policy",
+    "defi": "DeFi",
+    "ai": "AI",
+    "nft": "NFT",
+    "research": "Research",
+    "loadMore": "Load More",
+    "hotArticles": "Trending",
+    "hotTags": "Hot Tags",
+    "subscribe": "Subscribe",
+    "subscribePlaceholder": "Enter your email",
+    "subscribeCta": "Subscribe for the latest Web3 insights"
+  },
+  "article": {
+    "share": "Share",
+    "shareToWechat": "Share to WeChat",
+    "shareToTwitter": "Share to Twitter",
+    "shareToTelegram": "Share to Telegram",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "relatedArticles": "Related Articles",
+    "source": "Source",
+    "readMore": "Read More",
+    "minRead": "min read"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search articles...",
+    "hotKeywords": "Trending Searches",
+    "noResults": "No articles found",
+    "results": "Search Results"
+  },
+  "about": {
+    "title": "About 499",
+    "description": "499 is a Web3-focused media platform delivering the latest news and in-depth analysis on blockchain, DeFi, AI, and more.",
+    "mission": "Our Mission",
+    "missionText": "Making quality Web3 information accessible to everyone.",
+    "contact": "Contact Us"
+  },
+  "footer": {
+    "about": "About Us",
+    "disclaimer": "Disclaimer",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2026 499. All rights reserved.",
+    "followUs": "Follow Us"
+  },
+  "common": {
+    "backToHome": "Back to Home",
+    "language": "Language"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "home": "首页",
+    "news": "要闻",
+    "research": "行研",
+    "projects": "项目",
+    "events": "活动",
+    "about": "关于",
+    "search": "搜索",
+    "login": "登录"
+  },
+  "home": {
+    "featured": "精选文章",
+    "latest": "最新资讯",
+    "all": "全部",
+    "news": "要闻",
+    "policy": "政策",
+    "defi": "DeFi",
+    "ai": "AI",
+    "nft": "NFT",
+    "research": "行研",
+    "loadMore": "加载更多",
+    "hotArticles": "热门文章",
+    "hotTags": "热门标签",
+    "subscribe": "订阅",
+    "subscribePlaceholder": "输入邮箱订阅",
+    "subscribeCta": "订阅我们获取最新 Web3 资讯"
+  },
+  "article": {
+    "share": "分享",
+    "shareToWechat": "分享到微信",
+    "shareToTwitter": "分享到 Twitter",
+    "shareToTelegram": "分享到 Telegram",
+    "copyLink": "复制链接",
+    "copied": "已复制！",
+    "relatedArticles": "相关文章",
+    "source": "来源",
+    "readMore": "阅读更多",
+    "minRead": "分钟阅读"
+  },
+  "search": {
+    "title": "搜索",
+    "placeholder": "搜索文章...",
+    "hotKeywords": "热门搜索",
+    "noResults": "未找到相关文章",
+    "results": "搜索结果"
+  },
+  "about": {
+    "title": "关于 499",
+    "description": "499 是一个专注于 Web3 领域的媒体平台，为您提供最新的区块链、DeFi、AI 等前沿资讯和深度分析。",
+    "mission": "我们的使命",
+    "missionText": "让每个人都能轻松获取 Web3 世界的优质信息。",
+    "contact": "联系我们"
+  },
+  "footer": {
+    "about": "关于我们",
+    "disclaimer": "免责声明",
+    "privacy": "隐私政策",
+    "copyright": "© 2026 499. 版权所有",
+    "followUs": "关注我们"
+  },
+  "common": {
+    "backToHome": "返回首页",
+    "language": "语言"
+  }
+}
