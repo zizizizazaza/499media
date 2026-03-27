@@ -71,7 +71,7 @@ export default function Sidebar({
         </h3>
         <p className="text-sm text-muted mb-4">{t("subscribeCta")}</p>
         <a
-          href="https://t.me"
+          href="https://t.me/media499"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors"

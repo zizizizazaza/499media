@@ -3,11 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { Article } from "@/types/article";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function HeroSection({ articles }: { articles: Article[] }) {
   const [current, setCurrent] = useState(0);
+  const tc = useTranslations("common");
 
   if (articles.length === 0) return null;
 
@@ -26,7 +28,6 @@ export default function HeroSection({ articles }: { articles: Article[] }) {
             src={article.coverImage}
             alt={article.title}
             fill
-            unoptimized
             className="object-cover opacity-60"
             priority
             sizes="(max-width: 1280px) 100vw, 1280px"
@@ -34,7 +35,7 @@ export default function HeroSection({ articles }: { articles: Article[] }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
             <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-brand text-white mb-3">
-              精选
+              {tc("featured")}
             </span>
             <h2 className="text-xl md:text-3xl font-bold text-white leading-tight line-clamp-2">
               {article.title}

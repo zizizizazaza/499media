@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Search, Menu, X, Globe } from "lucide-react";
+import { Search, Menu, X, Globe, LogOut, User } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const navLinks = [
   { key: "home", href: "/" },
@@ -16,14 +18,35 @@ const navLinks = [
 
 export default function Header() {
   const t = useTranslations("nav");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const switchLocale = () => {
     const nextLocale = locale === "zh" ? "en" : "zh";
     router.replace(pathname, { locale: nextLocale });
+  };
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
   };
 
   return (
@@ -73,9 +96,29 @@ export default function Header() {
               <span>{locale === "zh" ? "EN" : "中"}</span>
             </button>
 
-            <button className="hidden md:inline-flex px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors">
-              {t("login")}
-            </button>
+            {user ? (
+              <div className="hidden md:flex items-center gap-2">
+                <span className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-heading bg-surface rounded-lg">
+                  <User className="w-4 h-4" />
+                  {user.email?.split("@")[0]}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 rounded-lg hover:bg-surface transition-colors text-muted hover:text-red-600"
+                  aria-label={tc("logout")}
+                  title={tc("logout")}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden md:inline-flex px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors"
+              >
+                {t("login")}
+              </Link>
+            )}
 
             {/* Mobile menu button */}
             <button
@@ -110,9 +153,29 @@ export default function Header() {
                   {t(key)}
                 </Link>
               ))}
-              <button className="mx-3 mt-2 px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors">
-                {t("login")}
-              </button>
+              {user ? (
+                <div className="flex flex-col gap-2 mx-3 mt-2">
+                  <span className="flex items-center gap-2 px-4 py-2 text-sm text-heading bg-surface rounded-lg">
+                    <User className="w-4 h-4" />
+                    {user.email?.split("@")[0]}
+                  </span>
+                  <button
+                    onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    {tc("logout")}
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mx-3 mt-2 px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors text-center block"
+                >
+                  {t("login")}
+                </Link>
+              )}
             </div>
           </nav>
         )}

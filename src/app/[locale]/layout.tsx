@@ -6,12 +6,21 @@ import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://499.media";
+
 export const metadata: Metadata = {
   title: {
     default: "499 - Web3 媒体平台",
     template: "%s | 499",
   },
   description: "499 是一个专注于 Web3 领域的媒体平台，提供最新的区块链、DeFi、AI 等前沿资讯和深度分析。",
+  metadataBase: new URL(siteUrl),
+  alternates: {
+    languages: {
+      zh: `${siteUrl}/zh`,
+      en: `${siteUrl}/en`,
+    },
+  },
   openGraph: {
     type: "website",
     siteName: "499",

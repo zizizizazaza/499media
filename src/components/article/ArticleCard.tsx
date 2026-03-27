@@ -2,8 +2,13 @@ import Image from "next/image";
 import type { Article } from "@/types/article";
 import { SOURCE_COLORS, SOURCE_LABELS } from "@/types/article";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 export default function ArticleCard({ article }: { article: Article }) {
+  const tc = useTranslations("common");
+  const locale = useLocale();
+
   return (
     <Link
       href={`/article/${article.slug}`}
@@ -14,7 +19,6 @@ export default function ArticleCard({ article }: { article: Article }) {
           src={article.coverImage}
           alt={article.title}
           fill
-          unoptimized
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="200px"
         />
@@ -38,7 +42,7 @@ export default function ArticleCard({ article }: { article: Article }) {
             {SOURCE_LABELS[article.source]}
           </span>
           <span className="text-xs text-muted">
-            {formatTime(article.publishedAt)}
+            {formatTime(article.publishedAt, locale, tc)}
           </span>
           <span className="text-xs text-muted">
             {article.readingTime} min
@@ -49,17 +53,21 @@ export default function ArticleCard({ article }: { article: Article }) {
   );
 }
 
-function formatTime(dateStr: string): string {
+function formatTime(
+  dateStr: string,
+  locale: string,
+  tc: ReturnType<typeof useTranslations>
+): string {
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-  if (diffHours < 1) return "刚刚";
-  if (diffHours < 24) return `${diffHours} 小时前`;
+  if (diffHours < 1) return tc("justNow");
+  if (diffHours < 24) return tc("hoursAgo", { count: diffHours });
   const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays} 天前`;
-  return date.toLocaleDateString("zh-CN", {
+  if (diffDays < 7) return tc("daysAgo", { count: diffDays });
+  return date.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
     month: "short",
     day: "numeric",
   });

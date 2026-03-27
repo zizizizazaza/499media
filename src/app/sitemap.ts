@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
-import { getAllArticles } from "@/lib/articles";
+import { getAllArticles, getAllCategories } from "@/lib/articles";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://499.media";
-  const articles = getAllArticles();
+  const [articles, categories] = await Promise.all([
+    getAllArticles(),
+    getAllCategories(),
+  ]);
   const locales = ["zh", "en"];
 
   const staticPages = [
@@ -39,11 +42,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // Category pages
-  const categories = ["news", "policy", "defi", "ai", "nft", "research"];
   for (const cat of categories) {
     for (const locale of locales) {
       entries.push({
-        url: `${siteUrl}/${locale}/category/${cat}`,
+        url: `${siteUrl}/${locale}/category/${cat.slug}`,
         lastModified: new Date(),
         changeFrequency: "daily",
         priority: 0.6,

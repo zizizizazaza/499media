@@ -4,6 +4,7 @@ import { ArrowLeft, Mail, Send } from "lucide-react";
 
 export default function AboutPage() {
   const t = useTranslations("about");
+  const tc = useTranslations("common");
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -12,7 +13,7 @@ export default function AboutPage() {
         className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        返回首页
+        {tc("backToHome")}
       </Link>
 
       <div className="bg-surface rounded-2xl p-8 md:p-12">
@@ -46,7 +47,7 @@ export default function AboutPage() {
             contact@499.media
           </a>
           <a
-            href="https://twitter.com"
+            href="https://x.com/499media"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-border text-sm text-heading hover:border-brand hover:text-brand transition-colors"
@@ -55,7 +56,7 @@ export default function AboutPage() {
             Twitter / X
           </a>
           <a
-            href="https://t.me"
+            href="https://t.me/media499"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-border text-sm text-heading hover:border-brand hover:text-brand transition-colors"

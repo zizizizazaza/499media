@@ -9,6 +9,7 @@ import ShareToolbar from "@/components/share/ShareToolbar";
 import ArticleCard from "@/components/article/ArticleCard";
 import { ArrowLeft, Clock, ExternalLink } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -16,15 +17,22 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) return {};
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://499.media";
   const url = `${siteUrl}/${locale}/article/${slug}`;
+  const alternateLocale = locale === "zh" ? "en" : "zh";
 
   return {
     title: article.title,
     description: article.summary,
+    alternates: {
+      canonical: url,
+      languages: {
+        [alternateLocale]: `${siteUrl}/${alternateLocale}/article/${slug}`,
+      },
+    },
     openGraph: {
       title: article.title,
       description: article.summary,
@@ -45,25 +53,54 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug, locale } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
+  const tc = await getTranslations("common");
+  const ta = await getTranslations("article");
 
   if (!article) {
     notFound();
   }
 
-  const related = getRelatedArticles(article, 4);
+  const related = await getRelatedArticles(article, 4);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://499.media";
   const articleUrl = `${siteUrl}/${locale}/article/${slug}`;
 
+  // JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.summary,
+    image: article.coverImage,
+    datePublished: article.publishedAt,
+    author: {
+      "@type": "Person",
+      name: article.author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "499",
+      url: siteUrl,
+    },
+    mainEntityOfPage: articleUrl,
+    keywords: article.tags.join(", "),
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Back link */}
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        返回首页
+        {tc("backToHome")}
       </Link>
 
       {/* Article Header */}
@@ -80,7 +117,7 @@ export default async function ArticlePage({ params }: PageProps) {
             {article.readingTime} min
           </span>
           <time className="text-sm text-muted">
-            {new Date(article.publishedAt).toLocaleDateString("zh-CN", {
+            {new Date(article.publishedAt).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -111,7 +148,7 @@ export default async function ArticlePage({ params }: PageProps) {
         {/* Author & Source */}
         <div className="mt-4 flex items-center justify-between">
           <span className="text-sm text-muted">
-            作者：{article.author}
+            {tc("author")}：{article.author}
           </span>
           {article.sourceUrl && (
             <a
@@ -120,7 +157,7 @@ export default async function ArticlePage({ params }: PageProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm text-brand hover:underline"
             >
-              原文链接
+              {tc("originalLink")}
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           )}
@@ -133,7 +170,6 @@ export default async function ArticlePage({ params }: PageProps) {
           src={article.coverImage}
           alt={article.title}
           fill
-          unoptimized
           className="object-cover"
           priority
           sizes="(max-width: 896px) 100vw, 896px"
@@ -160,7 +196,7 @@ export default async function ArticlePage({ params }: PageProps) {
       {/* Related articles */}
       {related.length > 0 && (
         <section className="mt-12">
-          <h2 className="text-xl font-bold text-heading mb-6">相关文章</h2>
+          <h2 className="text-xl font-bold text-heading mb-6">{ta("relatedArticles")}</h2>
           <div className="divide-y divide-border">
             {related.map((a) => (
               <ArticleCard key={a.id} article={a} />

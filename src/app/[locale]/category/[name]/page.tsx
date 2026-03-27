@@ -3,15 +3,7 @@ import ArticleCard from "@/components/article/ArticleCard";
 import type { ArticleCategory } from "@/types/article";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft } from "lucide-react";
-
-const CATEGORY_NAMES: Record<ArticleCategory, { zh: string; en: string }> = {
-  news: { zh: "要闻", en: "News" },
-  policy: { zh: "政策", en: "Policy" },
-  defi: { zh: "DeFi", en: "DeFi" },
-  ai: { zh: "AI", en: "AI" },
-  nft: { zh: "NFT", en: "NFT" },
-  research: { zh: "行研", en: "Research" },
-};
+import { getTranslations } from "next-intl/server";
 
 type PageProps = {
   params: Promise<{ locale: string; name: string }>;
@@ -19,23 +11,26 @@ type PageProps = {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { name, locale } = await params;
+  const tc = await getTranslations("common");
   const category = name as ArticleCategory;
-  const validCategories = getAllCategories();
+  const categories = await getAllCategories();
+  const validSlugs = categories.map((c) => c.slug);
 
-  if (!validCategories.includes(category)) {
+  if (!validSlugs.includes(category)) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <p className="text-muted">分类不存在</p>
+        <p className="text-muted">{tc("categoryNotFound")}</p>
         <Link href="/" className="mt-4 inline-block text-brand hover:underline">
-          返回首页
+          {tc("backToHome")}
         </Link>
       </div>
     );
   }
 
-  const articles = getArticlesByCategory(category);
+  const articles = await getArticlesByCategory(category);
+  const catRow = categories.find((c) => c.slug === category);
   const categoryName =
-    CATEGORY_NAMES[category]?.[locale as "zh" | "en"] || name;
+    locale === "en" ? (catRow?.name_en ?? name) : (catRow?.name_zh ?? name);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -44,7 +39,7 @@ export default async function CategoryPage({ params }: PageProps) {
         className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        返回首页
+        {tc("backToHome")}
       </Link>
 
       <h1 className="text-2xl font-bold text-heading mb-6">{categoryName}</h1>
@@ -56,7 +51,7 @@ export default async function CategoryPage({ params }: PageProps) {
           ))}
         </div>
       ) : (
-        <div className="py-20 text-center text-muted">暂无文章</div>
+        <div className="py-20 text-center text-muted">{tc("noArticles")}</div>
       )}
     </div>
   );
